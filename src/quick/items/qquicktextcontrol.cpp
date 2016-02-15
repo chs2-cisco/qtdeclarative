@@ -1033,7 +1033,7 @@ void QQuickTextControlPrivate::mousePressEvent(QMouseEvent *e, const QPointF &po
         e->ignore();
         return;
     } else if (!(interactionFlags & (Qt::TextSelectableByMouse | Qt::TextEditable))) {
-        if (!(interactionFlags & Qt::LinksAccessibleByMouse))
+        if (!(interactionFlags & Qt::LinksAccessibleByMouse) || hoveredLink.isEmpty())
             e->ignore();
         return;
     }
