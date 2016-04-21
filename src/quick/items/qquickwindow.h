@@ -181,6 +181,8 @@ public:
     static TextRenderType textRenderType();
     static void setTextRenderType(TextRenderType renderType);
 
+    void setFirstTimeHover(bool hover);
+
 Q_SIGNALS:
     void frameSwapped();
     Q_REVISION(2) void openglContextCreated(QOpenGLContext *context);
