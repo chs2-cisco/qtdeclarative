@@ -1983,7 +1983,11 @@ QVariant QQuickTextInput::inputMethodQuery(Qt::InputMethodQuery property, QVaria
             return QVariant(d->realText());
         }
     case Qt::ImCurrentSelection:
-        return QVariant(selectedText());
+        if (d->m_echoMode == PasswordEchoOnEdit || d->m_echoMode == Password) {
+            return QVariant();
+        } else {
+            return QVariant(selectedText());
+        }
     case Qt::ImMaximumTextLength:
         return QVariant(maxLength());
     case Qt::ImAnchorPosition:
