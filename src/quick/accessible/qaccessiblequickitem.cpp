@@ -369,7 +369,7 @@ QString QAccessibleQuickItem::text(QAccessible::Text textType) const
     }
 
     // the following block handles item-specific behavior
-    if (role() == QAccessible::EditableText) {
+    if (role() == QAccessible::EditableText && !state().passwordEdit) {
         if (textType == QAccessible::Value) {
             if (QTextDocument *doc = textDocument()) {
                 return doc->toPlainText();
