@@ -148,6 +148,8 @@ class Q_QUICK_EXPORT QQuickItem : public QObject, public QQmlParserStatus
 
     Q_PRIVATE_PROPERTY(QQuickItem::d_func(), QQuickItemLayer *layer READ layer DESIGNABLE false CONSTANT FINAL)
 
+    Q_PROPERTY(Qt::FocusReason lastFocusReason READ getLastFocusReason NOTIFY lastFocusReasonChanged FINAL)
+
     Q_CLASSINFO("DefaultProperty", "data")
     Q_CLASSINFO("qt_QmlJSWrapperFactoryMethod", "_q_createJSWrapper(QV4::ExecutionEngine*)")
 
@@ -362,6 +364,9 @@ public:
     virtual bool isTextureProvider() const;
     virtual QSGTextureProvider *textureProvider() const;
 
+    Qt::FocusReason getLastFocusReason();
+    void setLastFocusReason(Qt::FocusReason);
+
 public Q_SLOTS:
     void update();
 
@@ -395,6 +400,8 @@ Q_SIGNALS:
     void implicitWidthChanged();
     void implicitHeightChanged();
     Q_REVISION(11) void containmentMaskChanged();
+
+    void lastFocusReasonChanged();
 
 protected:
     bool event(QEvent *) override;

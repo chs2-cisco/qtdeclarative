@@ -558,6 +558,8 @@ public:
 
     QList<QQuickTransform *> transforms;
 
+    Qt::FocusReason m_LastFocusReason;
+
     inline qreal z() const { return extra.isAllocated()?extra->z:0; }
     inline qreal scale() const { return extra.isAllocated()?extra->scale:1; }
     inline qreal rotation() const { return extra.isAllocated()?extra->rotation:0; }
