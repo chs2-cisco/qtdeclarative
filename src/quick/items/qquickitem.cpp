@@ -3246,6 +3246,7 @@ QQuickItemPrivate::QQuickItemPrivate()
     , baselineOffset(0)
     , itemNodeInstance(nullptr)
     , paintNode(nullptr)
+    , m_LastFocusReason(Qt::OtherFocusReason)
 {
 }
 
@@ -4007,7 +4008,7 @@ void QQuickItem::inputMethodEvent(QInputMethodEvent *event)
     If you do reimplement this function, you should call the base class
     implementation.
   */
-void QQuickItem::focusInEvent(QFocusEvent * /*event*/)
+void QQuickItem::focusInEvent(QFocusEvent * event)
 {
 #if QT_CONFIG(accessibility)
     if (QAccessible::isActive()) {
@@ -4017,6 +4018,7 @@ void QQuickItem::focusInEvent(QFocusEvent * /*event*/)
         }
     }
 #endif
+   setLastFocusReason(event->reason());
 }
 
 /*!
@@ -5978,6 +5980,34 @@ void QQuickItem::setEnabled(bool e)
         scope = scope->parentItem();
 
     d->setEffectiveEnableRecur(scope, d->calcEffectiveEnable());
+}
+
+void QQuickItem::setLastFocusReason(Qt::FocusReason reason)
+{
+    if (!parentItem())
+        return;
+
+    QQuickItem *item = parentItem();
+    while (item && item->isFocusScope() && item->parentItem())
+        item = item->parentItem();
+
+    QQuickItemPrivate *itemPrivate = QQuickItemPrivate::get(item);
+    if (itemPrivate->m_LastFocusReason != reason) {
+        itemPrivate->m_LastFocusReason = reason;
+        emit lastFocusReasonChanged();
+    }
+}
+
+Qt::FocusReason QQuickItem::getLastFocusReason()
+{
+    if (!parentItem())
+        return Qt::OtherFocusReason;
+
+    QQuickItem *item = parentItem();
+    while (item && item->isFocusScope() && item->parentItem())
+        item = item->parentItem();
+
+    return QQuickItemPrivate::get(item)->m_LastFocusReason;
 }
 
 bool QQuickItemPrivate::calcEffectiveVisible() const
