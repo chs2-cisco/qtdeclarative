@@ -254,6 +254,7 @@ class QQuickDragAttached : public QObject
     Q_PROPERTY(Qt::DropActions supportedActions READ supportedActions WRITE setSupportedActions NOTIFY supportedActionsChanged)
     Q_PROPERTY(Qt::DropAction proposedAction READ proposedAction WRITE setProposedAction NOTIFY proposedActionChanged)
     Q_PROPERTY(QQuickDrag::DragType dragType READ dragType WRITE setDragType NOTIFY dragTypeChanged)
+    Q_PROPERTY(bool enableSlideBack READ enableSlideBack WRITE setEnableSlideBack NOTIFY enableSlideBackChanged)
 public:
     QQuickDragAttached(QObject *parent);
     ~QQuickDragAttached();
@@ -288,6 +289,9 @@ public:
     QQuickDrag::DragType dragType() const;
     void setDragType(QQuickDrag::DragType dragType);
 
+    bool enableSlideBack() const;
+    void setEnableSlideBack(bool enable);
+
     Q_INVOKABLE int drop();
 
     bool event(QEvent *event) override;
@@ -311,6 +315,7 @@ Q_SIGNALS:
     void supportedActionsChanged();
     void proposedActionChanged();
     void dragTypeChanged();
+    void enableSlideBackChanged();
 };
 
 QT_END_NAMESPACE
