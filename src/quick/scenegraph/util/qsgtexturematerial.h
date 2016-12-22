@@ -42,6 +42,7 @@
 
 #include <QtQuick/qsgmaterial.h>
 #include <QtQuick/qsgtexture.h>
+#include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,7 +74,7 @@ public:
     QSGTexture::AnisotropyLevel anisotropyLevel() const { return QSGTexture::AnisotropyLevel(m_anisotropy_level); }
 
 protected:
-    QSGTexture *m_texture;
+    QPointer<QSGTexture> m_texture;
 
     uint m_filtering: 2;
     uint m_mipmap_filtering: 2;

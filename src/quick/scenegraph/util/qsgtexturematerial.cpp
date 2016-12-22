@@ -84,6 +84,14 @@ void QSGOpaqueTextureMaterialShader::updateState(const RenderState &state, QSGMa
     QSGOpaqueTextureMaterial *oldTx = static_cast<QSGOpaqueTextureMaterial *>(oldEffect);
 
     QSGTexture *t = tx->texture();
+    if (!t) {
+        qWarning() << "NULL texture in tx";
+        return;
+    }
+    if (oldTx && !oldTx->texture()) {
+        qWarning() << "NULL texture in oldTx";
+        return;
+    }
 
 #ifndef QT_NO_DEBUG
     if (!qsg_safeguard_texture(t))
@@ -323,6 +331,14 @@ int QSGOpaqueTextureMaterial::compare(const QSGMaterial *o) const
 {
     Q_ASSERT(o && type() == o->type());
     const QSGOpaqueTextureMaterial *other = static_cast<const QSGOpaqueTextureMaterial *>(o);
+    if (!m_texture) {
+        qWarning() << "m_texture is NULL!";
+        return -1;
+    }
+    if (!other->texture()) {
+        qWarning() << "other->texture() is NULL!";
+        return -1;
+    }
     if (int diff = m_texture->textureId() - other->texture()->textureId())
         return diff;
     return int(m_filtering) - int(other->m_filtering);
