@@ -314,8 +314,10 @@ void QSGDefaultPainterNode::updateRenderTarget()
         texture->setTextureSize(m_fboSize);
     }
 
-    if (m_texture)
+    if (m_texture) {
+        qWarning() << "Deleting texture " << m_texture << " size: " << m_texture->textureSize();
         delete m_texture;
+    }
 
     m_texture = texture;
 }
