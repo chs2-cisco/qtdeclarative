@@ -810,10 +810,11 @@ void QQuickTextControl::setHtml(const QString &text)
 
 void QQuickTextControlPrivate::keyReleaseEvent(QKeyEvent *e)
 {
-    if (e->key() == Qt::Key_Back) {
+    if (e->key() == Qt::Key_Back || e->key() == Qt::Key_Alt || (e->modifiers() & Qt::AltModifier)) {
          e->ignore();
          return;
     }
+
     return;
 }
 
