@@ -100,6 +100,7 @@ void QQuickTextNodeEngine::BinaryTreeNode::insert(QVarLengthArray<BinaryTreeNode
         return;
 
     decorations |= (glyphRun.underline() ? Decoration::Underline : Decoration::NoDecoration);
+    decorations |= (glyphRun.spellCheckUnderline() ? Decoration::SpellCheckUnderline : Decoration::NoDecoration);
     decorations |= (glyphRun.overline()  ? Decoration::Overline  : Decoration::NoDecoration);
     decorations |= (glyphRun.strikeOut() ? Decoration::StrikeOut : Decoration::NoDecoration);
     decorations |= (backgroundColor.isValid() ? Decoration::Background : Decoration::NoDecoration);
@@ -217,6 +218,74 @@ void QQuickTextNodeEngine::addTextDecorations(const QVarLengthArray<TextDecorati
     }
 }
 
+QPixmap QQuickTextNodeEngine::generateWavyPixmap(qreal maxRadius, const QPen &pen, int width)
+{
+    const qreal radiusBase = qMax(qreal(1), maxRadius);
+
+    QPixmap pixmap;
+
+    const qreal halfPeriod = qMax(qreal(2), qreal(radiusBase * 1.61803399)); // the golden ratio
+    const qreal radius = qFloor(radiusBase * 2) / 2.;
+
+    QPainterPath path;
+
+    qreal xs = 0;
+    qreal ys = radius;
+
+    while (xs < width) {
+        xs += halfPeriod;
+        ys = -ys;
+        path.quadTo(xs - halfPeriod / 2, ys, xs, 0);
+    }
+
+    pixmap = QPixmap(width, radius * 2);
+    pixmap.fill(Qt::transparent);
+    {
+        QPen wavePen = pen;
+        wavePen.setCapStyle(Qt::SquareCap);
+
+        QPainter imgPainter(&pixmap);
+        imgPainter.setPen(wavePen);
+        imgPainter.setRenderHint(QPainter::Antialiasing);
+        imgPainter.translate(0, radius);
+        imgPainter.drawPath(path);
+    }
+
+    return pixmap;
+}
+
+QPixmap QQuickTextNodeEngine::generateDottedPixmap(int dotWidth, const QPen &pen, int width)
+{
+    QPixmap pixmap;
+    QPainterPath path;
+
+    bool fill = true;
+    qreal xs = 0;
+
+    while (xs < width) {
+        xs += dotWidth;
+
+        if (fill) {
+            path.lineTo(xs, 0);
+        } else {
+            xs += dotWidth;
+            path.moveTo(xs, 0);
+        }
+
+        fill = !fill;
+    }
+
+    pixmap = QPixmap(width, pen.width());
+    pixmap.fill(Qt::transparent);
+    {
+        QPainter imgPainter(&pixmap);
+        imgPainter.setPen(pen);
+        imgPainter.drawPath(path);
+    }
+
+    return pixmap;
+}
+
 void QQuickTextNodeEngine::processCurrentLine()
 {
     // No glyphs, do nothing
@@ -241,6 +310,9 @@ void QQuickTextNodeEngine::processCurrentLine()
     qreal underlineOffset = 0.0;
     qreal underlineThickness = 0.0;
 
+    qreal spellCheckUnderlineOffset = 0.0;
+    qreal spellCheckUnderlineThickness = 0.0;
+
     qreal overlineOffset = 0.0;
     qreal overlineThickness = 0.0;
 
@@ -253,6 +325,7 @@ void QQuickTextNodeEngine::processCurrentLine()
     QColor lastBackgroundColor;
 
     QVarLengthArray<TextDecoration> pendingUnderlines;
+    QVarLengthArray<TextDecoration> pendingSpellCheckUnderlines;
     QVarLengthArray<TextDecoration> pendingOverlines;
     QVarLengthArray<TextDecoration> pendingStrikeOuts;
     if (!sortedIndexes.isEmpty()) {
@@ -281,6 +354,11 @@ void QQuickTextNodeEngine::processCurrentLine()
                 TextDecoration textDecoration(currentSelectionState, decorationRect, lastColor);
                 if (currentDecorations & Decoration::Underline)
                     pendingUnderlines.append(textDecoration);
+
+                if (currentDecorations & Decoration::SpellCheckUnderline) {
+                    textDecoration.spellCheckUnderline = true;
+                    pendingSpellCheckUnderlines.append(textDecoration);
+                }
 
                 if (currentDecorations & Decoration::Overline)
                     pendingOverlines.append(textDecoration);
@@ -353,6 +431,16 @@ void QQuickTextNodeEngine::processCurrentLine()
                     underlineThickness = 0.0;
                 }
 
+                if (!pendingSpellCheckUnderlines.isEmpty()
+                        && !(node->decorations & Decoration::SpellCheckUnderline)) {
+                    addTextDecorations(pendingSpellCheckUnderlines, spellCheckUnderlineOffset, spellCheckUnderlineThickness);
+
+                    pendingSpellCheckUnderlines.clear();
+
+                    spellCheckUnderlineOffset = 0.0;
+                    spellCheckUnderlineThickness = 0.0;
+                }
+
                 // ### Add pending when overlineOffset/thickness changes to minimize number of
                 // nodes
                 if (!pendingOverlines.isEmpty()) {
@@ -384,6 +472,18 @@ void QQuickTextNodeEngine::processCurrentLine()
                     }
                 }
 
+                if (node->decorations & Decoration::SpellCheckUnderline) {
+                    if (rawFont.lineThickness() > spellCheckUnderlineThickness) {
+                        spellCheckUnderlineThickness = rawFont.lineThickness();
+#ifdef Q_OS_MACOS
+                        spellCheckUnderlineThickness *= 4.0;
+#else
+                        spellCheckUnderlineThickness *= 5.0;
+#endif
+                        spellCheckUnderlineOffset = rawFont.underlinePosition();
+                    }
+                }
+
                 if (node->decorations & Decoration::Overline) {
                     overlineOffset = -rawFont.ascent();
                     overlineThickness = rawFont.lineThickness();
@@ -403,6 +503,9 @@ void QQuickTextNodeEngine::processCurrentLine()
 
         if (!pendingUnderlines.isEmpty())
             addTextDecorations(pendingUnderlines, underlineOffset, underlineThickness);
+
+        if (!pendingSpellCheckUnderlines.isEmpty())
+            addTextDecorations(pendingSpellCheckUnderlines, spellCheckUnderlineOffset, spellCheckUnderlineThickness);
 
         if (!pendingOverlines.isEmpty())
             addTextDecorations(pendingOverlines, overlineOffset, overlineThickness);
@@ -812,7 +915,16 @@ void  QQuickTextNodeEngine::addToSceneGraph(QQuickTextNode *parentNode,
                 ? m_selectedTextColor
                 : textDecoration.color;
 
-        parentNode->addRectangleNode(textDecoration.rect, color);
+        if (textDecoration.spellCheckUnderline) {
+#ifdef Q_OS_MACOS
+            auto pixmap = generateDottedPixmap(2, QPen(Qt::red, 2), textDecoration.rect.width());
+#else
+            auto pixmap = generateWavyPixmap(3, QPen(Qt::red, 2), textDecoration.rect.width());
+#endif
+            parentNode->addImage(textDecoration.rect, pixmap.toImage());
+        } else {
+            parentNode->addRectangleNode(textDecoration.rect, color);
+        }
     }
 
     // Finally add the selected text on top of everything
