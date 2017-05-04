@@ -70,11 +70,12 @@ QT_BEGIN_NAMESPACE
 class QQuickTextNodeEngine {
 public:
     enum Decoration {
-        NoDecoration = 0x0,
-        Underline    = 0x1,
-        Overline     = 0x2,
-        StrikeOut    = 0x4,
-        Background   = 0x8
+        NoDecoration        = 0x0,
+        Underline           = 0x1,
+        Overline            = 0x2,
+        StrikeOut           = 0x4,
+        Background          = 0x8,
+        SpellCheckUnderline = 0x10
     };
     Q_DECLARE_FLAGS(Decorations, Decoration)
 
@@ -223,8 +224,8 @@ public:
         m_position = position;
     }
 
-
-
+    static QPixmap generateWavyPixmap(qreal maxRadius, const QPen &pen, int width);
+    static QPixmap generateDottedPixmap(int dotWidth, const QPen &pen, int width);
 
 private:
     struct TextDecoration
@@ -236,12 +237,14 @@ private:
             : selectionState(s)
             , rect(r)
             , color(c)
+            , spellCheckUnderline(false)
         {
         }
 
         SelectionState selectionState;
         QRectF rect;
         QColor color;
+        bool spellCheckUnderline : 1;
     };
 
     void processCurrentLine();
