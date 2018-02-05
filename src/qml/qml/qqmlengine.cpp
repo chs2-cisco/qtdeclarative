@@ -1752,7 +1752,8 @@ void QQmlData::destroyed(QObject *object)
         compilationUnit = 0;
     }
 
-    releaseDeferredData();
+    qDeleteAll(deferredData);
+    deferredData.clear();
 
     QQmlBoundSignal *signalHandler = signalHandlers;
     while (signalHandler) {
