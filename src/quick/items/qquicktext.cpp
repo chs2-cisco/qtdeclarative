@@ -2370,6 +2370,9 @@ void QQuickText::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeo
         d->updateLayout();
     } else {
         // We just need to re-layout
+        if (d->_anchors) {
+            QQuickAnchorsPrivate::get(d->_anchors)->updateMe();
+        }
         d->updateSize();
     }
 
