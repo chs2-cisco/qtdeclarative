@@ -358,7 +358,7 @@ static void updatePixelRatioHelper(QQuickItem *item, float pixelRatio)
 void QQuickWindow::physicalDpiChanged()
 {
     Q_D(QQuickWindow);
-    const qreal newPixelRatio = screen()->devicePixelRatio();
+    const qreal newPixelRatio = screen() ? screen()->devicePixelRatio() : 1.0; //never return 0
     if (qFuzzyCompare(newPixelRatio, d->devicePixelRatio))
         return;
     d->devicePixelRatio = newPixelRatio;
