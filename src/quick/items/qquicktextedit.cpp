@@ -2908,9 +2908,16 @@ QString QQuickTextEdit::hoveredLink() const
     return QString();
 }
 
+bool QQuickTextEdit::isTextHovered() const
+{
+	return textHovered;
+}
+
 void QQuickTextEdit::hoverEnterEvent(QHoverEvent *event)
 {
     Q_D(QQuickTextEdit);
+    textHovered = true;
+    emit textHoveredChanged();
     if (d->isLinkHoveredConnected())
         d->control->processEvent(event, QPointF(-d->xoff, -d->yoff));
 }
@@ -2925,6 +2932,8 @@ void QQuickTextEdit::hoverMoveEvent(QHoverEvent *event)
 void QQuickTextEdit::hoverLeaveEvent(QHoverEvent *event)
 {
     Q_D(QQuickTextEdit);
+    textHovered = false;
+    emit textHoveredChanged();
     if (d->isLinkHoveredConnected())
         d->control->processEvent(event, QPointF(-d->xoff, -d->yoff));
 }
