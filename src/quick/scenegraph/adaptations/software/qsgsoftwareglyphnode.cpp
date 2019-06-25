@@ -61,16 +61,21 @@ QRectF calculateBoundingRect(const QPointF &position, const QGlyphRun &glyphs)
         QRectF glyphRect = glyphs.rawFont().boundingRect(glyphs.glyphIndexes()[i]);
         glyphRect.translate(glyphs.positions()[i]);
 
+        //Workaround for QTBUG-71928
+        bool increaseBoundingRect = glyphRect.height() > glyphs.rawFont().ascent();
+        qreal glyphRectRight = glyphRect.right() + (increaseBoundingRect ? glyphRect.width() * 0.15 : 0);
+        qreal glyphRectBottom = glyphRect.bottom() + (increaseBoundingRect ? glyphRect.height() * 0.15 : 0);
+
         if (i == 0) {
             minX = glyphRect.left();
             minY = glyphRect.top();
-            maxX = glyphRect.right();
-            maxY = glyphRect.bottom();
+            maxX = glyphRectRight;
+            maxY = glyphRectBottom;
         } else {
             minX = qMin(glyphRect.left(), minX);
             minY = qMin(glyphRect.top(), minY);
-            maxX = qMax(glyphRect.right(),maxX);
-            maxY = qMax(glyphRect.bottom(), maxY);
+            maxX = qMax(glyphRectRight, maxX);
+            maxY = qMax(glyphRectBottom, maxY);
         }
     }
     QRectF boundingRect(QPointF(minX, minY), QPointF(maxX, maxY));
