@@ -162,7 +162,7 @@ public:
                 signalIndexes.append(propertyId + signalOffset);
         }
 
-        for (int i = 0, c = items.count();  i < c; ++i) {
+        for (int i = 0;  i < items.count(); ++i) {
             QQmlDelegateModelItem *item = items.at(i);
             const int idx = item->modelIndex();
             if (idx >= index && idx < index + count) {
