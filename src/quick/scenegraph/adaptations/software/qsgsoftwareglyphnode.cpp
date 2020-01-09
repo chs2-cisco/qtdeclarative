@@ -49,12 +49,45 @@ QSGSoftwareGlyphNode::QSGSoftwareGlyphNode()
     setGeometry(&m_geometry);
 }
 
+namespace {
+QRectF calculateBoundingRect(const QPointF &position, const QGlyphRun &glyphs)
+{
+    qreal minX = 0;
+    qreal minY = 0;
+    qreal maxX = 0;
+    qreal maxY = 0;
+
+    for (int i = 0, n = qMin(glyphs.glyphIndexes().size(), glyphs.positions().size()); i < n; ++i) {
+        QRectF glyphRect = glyphs.rawFont().boundingRect(glyphs.glyphIndexes()[i]);
+        glyphRect.translate(glyphs.positions()[i]);
+
+        //Workaround for QTBUG-71928
+        bool increaseBoundingRect = glyphRect.height() > glyphs.rawFont().ascent();
+        qreal glyphRectRight = glyphRect.right() + (increaseBoundingRect ? glyphRect.width() * 0.15 : 0);
+        qreal glyphRectBottom = glyphRect.bottom() + (increaseBoundingRect ? glyphRect.height() * 0.15 : 0);
+
+        if (i == 0) {
+            minX = glyphRect.left();
+            minY = glyphRect.top();
+            maxX = glyphRectRight;
+            maxY = glyphRectBottom;
+        } else {
+            minX = qMin(glyphRect.left(), minX);
+            minY = qMin(glyphRect.top(), minY);
+            maxX = qMax(glyphRectRight, maxX);
+            maxY = qMax(glyphRectBottom, maxY);
+        }
+    }
+    QRectF boundingRect(QPointF(minX, minY), QPointF(maxX, maxY));
+    return boundingRect.translated(position - QPointF(0.0, glyphs.rawFont().ascent()));
+}
+}
 
 void QSGSoftwareGlyphNode::setGlyphs(const QPointF &position, const QGlyphRun &glyphs)
 {
     m_position = position;
     m_glyphRun = glyphs;
-    m_bounding_rect = glyphs.boundingRect().translated(m_position - QPointF(0.0, glyphs.rawFont().ascent()));
+    m_bounding_rect = calculateBoundingRect(position, glyphs);
 }
 
 void QSGSoftwareGlyphNode::setColor(const QColor &color)
