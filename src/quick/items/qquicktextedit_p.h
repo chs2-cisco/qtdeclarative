@@ -37,6 +37,13 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-21656: Expose hovered event flag
+ * Add and expose hover flag for QML TextEdit.
+ *
+ * May 10, 2019, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+
 #ifndef QQUICKTEXTEDIT_P_H
 #define QQUICKTEXTEDIT_P_H
 

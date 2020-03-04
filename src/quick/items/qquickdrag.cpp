@@ -37,6 +37,15 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-13697: Add enableSlideBack property to Drag attached property
+ *
+ * The new enableSlideBack property controls whether to enable or disable
+ * slide back animation of drags that are not accepted.
+ *
+ * Nov 21, 2016, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #include "qquickdrag_p.h"
 
 #include <private/qguiapplication_p.h>

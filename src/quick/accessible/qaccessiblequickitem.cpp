@@ -37,6 +37,12 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-12712 Do not give password textfield text to accessibility
+ *
+ * Oct 28, 2016, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+
 #include "qaccessiblequickitem_p.h"
 
 #include <QtGui/qtextdocument.h>

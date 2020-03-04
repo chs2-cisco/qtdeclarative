@@ -37,6 +37,15 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-22609: Fix list out of bounds crash
+ *
+ * In some cases notifying of data changes caused item cache list count to
+ * get smaller causing out of bounds crash when iterating the list.
+ *
+ * Sep 11, 2019, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #include "qqmladaptormodel_p.h"
 
 #include <private/qqmldelegatemodel_p_p.h>

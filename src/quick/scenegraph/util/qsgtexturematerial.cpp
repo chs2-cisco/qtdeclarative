@@ -37,6 +37,12 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-13077: Add QPointer for texture
+ *
+ * Dec 22, 2016, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #include "qsgtexturematerial_p.h"
 #include "qsgtexture_p.h"
 #if QT_CONFIG(opengl)

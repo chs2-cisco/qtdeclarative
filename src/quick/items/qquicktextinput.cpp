@@ -37,6 +37,18 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-14326: Add focus reason
+ * Pass focus reason when text input field is clicked
+ *
+ * Jan 26, 2017, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+/*
+ * BTUC-11641 Do not return password field text for inputMethodQuery
+ * May 31, 2016, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+
+
 #include "qquicktextinput_p.h"
 #include "qquicktextinput_p_p.h"
 #include "qquickwindow.h"

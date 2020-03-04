@@ -37,6 +37,12 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-11240: Hack to fix an issue with hover events
+ *
+ * Apr 21, 2016, Ilja Mäki (Cisco Systems, Inc.)
+*/
+
 #ifndef QQUICKWINDOW_H
 #define QQUICKWINDOW_H
 

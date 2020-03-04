@@ -37,6 +37,18 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-18861: Endless loop fixed for qquicktext.
+ *
+ * Take anchors into account before size update.
+ * Otherwise it causes endless loop in
+ * QQuickWindowPrivate::polishItems(): item got
+ * updated twice and returns back to original
+ * geometry.
+ *
+ * Apr 10, 2018, Denis Rusakov (Cisco Systems, Inc.)
+*/
+
 #include "qquicktext_p.h"
 #include "qquicktext_p_p.h"
 

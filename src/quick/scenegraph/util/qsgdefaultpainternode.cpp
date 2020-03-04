@@ -37,6 +37,12 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-13077: Add QPointer for texture
+ *
+ * Dec 22, 2016, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #include "qsgdefaultpainternode_p.h"
 
 #include <QtQuick/private/qquickpainteditem_p.h>

@@ -37,6 +37,13 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-15503: Spell check style implemented
+ * Added style support for qt quick
+ *
+ * May 4, 2017, Denis Rusakov (Cisco Systems, Inc.)
+*/
+
 #include "qquicktextnodeengine_p.h"
 
 #include <QtCore/qpoint.h>

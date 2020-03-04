@@ -37,6 +37,15 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-21649: Workaround for QTBUG-71928
+ *
+ * Extend the bounding rect around a character
+ * if the height is more than the font ascent.
+ *
+ * Jun 25, 2019, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+
 #include "qsgsoftwareglyphnode_p.h"
 
 QT_BEGIN_NAMESPACE

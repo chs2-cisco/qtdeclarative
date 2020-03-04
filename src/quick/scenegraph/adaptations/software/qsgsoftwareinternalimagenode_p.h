@@ -37,6 +37,15 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-18788: Fix crash on invalid texture access
+ *
+ * In some rare case the accessed texture has been destroyed causing a
+ * crash. Use QPointer to prevent accessing of invalid textures.
+ *
+ * Mar 26, 2018, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #ifndef QSGSOFTWAREINTERNALIMAGENODE_H
 #define QSGSOFTWAREINTERNALIMAGENODE_H
 

@@ -37,6 +37,21 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-14215: Alt key fixed for TextControl
+ * Propogade key released event for Alt key or Alt modifier
+ *
+ * Jan 16, 2017, Denis Rusakov (Cisco Systems, Inc.)
+*/
+/*
+ * BTUC-10632: Add Qt patch to allow clicking links in read-only QML texts
+ *
+ * Mouse press events are now handled if the text edit is read-only
+ * but a link is hovered.
+ *
+ * Feb 15, 2016, Juho Frits (Cisco Systems, Inc.)
+*/
+
 #include "qquicktextcontrol_p.h"
 #include "qquicktextcontrol_p_p.h"
 

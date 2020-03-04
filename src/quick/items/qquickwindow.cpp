@@ -37,6 +37,20 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-21035: Add null check
+ *
+ * Add null check Virtual Driver maybe causes
+ * Qt to lose screen.
+ *
+ * Apr 4, 2019, Henri Borodavkin (Cisco Systems, Inc.)
+*/
+/*
+ * BTUC-11240: Hack to fix an issue with hover events
+ *
+ * Apr 21, 2016, Ilja Mäki (Cisco Systems, Inc.)
+*/
+
 #include "qquickwindow.h"
 #include "qquickwindow_p.h"
 #include "qquickwindowattached_p.h"

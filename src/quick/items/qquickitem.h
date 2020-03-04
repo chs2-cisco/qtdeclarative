@@ -37,6 +37,12 @@
 **
 ****************************************************************************/
 
+/*
+ * BTUC-13503 Save last focus event reason
+ *
+ * Nov 9, 2016, Aditya Kolachana (Cisco Systems, Inc.)
+*/
+
 #ifndef QQUICKITEM_H
 #define QQUICKITEM_H
 
